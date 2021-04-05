@@ -80,4 +80,22 @@ class Siswa extends Koneksi
         $query = $this->query($sql);
         return $query;
     }
+
+    function cariSiswa($namSiswa)
+    {
+        $sql = "SELECT 
+                    siswa.*,
+                    kelas.nama_kelas,
+                    jurusan.inisial,
+                    spp.id_spp 
+                FROM 
+                    siswa 
+                    LEFT JOIN kelas ON kelas.id_kelas = siswa.id_kelas 
+                    LEFT JOIN jurusan ON jurusan.id = kelas.kompetensi_keahlian
+                    LEFT JOIN spp ON spp.id_spp = siswa.id_spp 
+                WHERE 
+                    nama like '{$namSiswa}%'";
+        $query = $this->query($sql);
+        return $query;
+    }
 }

@@ -10,21 +10,39 @@ $pembayaran = new Pembayaran();
 $kelas = new Kelas();
 $dataKelas = $kelas->getKelasJoinJurusan();
 if (!isset($_SESSION['ID'])) {
-    ?>
+?>
     <script>
         alert('Silahkan login terlebih dahulu :)');
         window.location = <?= $BASE_URL ?>;
     </script>
-<?php
+    <?php
 }
 
-if(isset($_POST['filter'])){
+if (isset($_POST['filter'])) {
     $data = $pembayaran->getSemuaPembayaranByKelas($_POST['kelas']);
-}else{
+} else {
     $data = $pembayaran->getSemuaPembayaran();
 }
 
-if($_SESSION['LEVEL'] == 'siswa'){
+if (isset($_POST['cetak'])) {
+    if (isset($_POST['kelas'])) {
+    ?>
+        <script>
+            window.location.href = '<?= $BASE_URL . 'halaman/history_bayar/cetak.php?kelas=' . $_POST['kelas'] ?>';
+        </script>
+    <?php
+    }
+
+    if ($_SESSION['LEVEL'] == 'siswa') {
+    ?>
+        <script>
+            window.location.href = '<?= $BASE_URL . 'halaman/history_bayar/cetak.php?id=' . $_SESSION['ID'] ?>';
+        </script>
+<?php
+    }
+}
+
+if ($_SESSION['LEVEL'] == 'siswa') {
     $data = $pembayaran->getSemuaPembayaranByNisn($_SESSION['ID']);
 }
 
@@ -35,22 +53,27 @@ if($_SESSION['LEVEL'] == 'siswa'){
             <h3 class="card-title">HISTORY PEMBAYARAN SPP SISWA</h3>
         </div>
         <div class="card-body">
-        <?php if($_SESSION['LEVEL'] != 'siswa'): ?>
-            <form method="post">
-                <div class="form-group">
-                    <label for="">Filter Kelas</label>
-                    <select name="kelas" id="kelas" class="form-control">
-                        <?php while($val = $kelas->fetch_asc($dataKelas)){
-                        ?>
-                            <option <?= (isset($_POST['kelas']) && $_POST['kelas'] == $val['id_kelas']) ? "selected" : "" ?> value="<?= $val['id_kelas'] ?>">
-                                <?= $val['nama_kelas'].' - '.$val['inisial'] ?>
-                            </option>
-                        <?php } ?>
-                    </select>
-                </div>
-                <button type="submit" name="filter" class="btn btn-sm btn-info"><i class="fa fa-search"></i> Filter</button>
-            </form>
-            <?php endif; ?>
+            <?php if ($_SESSION['LEVEL'] != 'siswa') { ?>
+                <form method="post">
+                    <div class="form-group">
+                        <label for="">Filter Kelas</label>
+                        <select name="kelas" id="kelas" class="form-control">
+                            <?php while ($val = $kelas->fetch_asc($dataKelas)) {
+                            ?>
+                                <option <?= (isset($_POST['kelas']) && $_POST['kelas'] == $val['id_kelas']) ? "selected" : "" ?> value="<?= $val['id_kelas'] ?>">
+                                    <?= $val['nama_kelas'] . ' - ' . $val['inisial'] ?>
+                                </option>
+                            <?php } ?>
+                        </select>
+                    </div>
+                    <button type="submit" name="filter" class="btn btn-sm btn-info"><i class="fa fa-search"></i> Filter</button>
+                    <button type="submit" name="cetak" class="btn btn-sm btn-success"><i class="fa fa-print"></i> Cetak</button>
+                </form>
+            <?php } else { ?>
+                <form method="post">
+                    <button type="submit" name="cetak" class="btn btn-sm btn-success"><i class="fa fa-print"></i> Cetak</button>
+                </form>
+            <?php } ?>
             <br>
             <table id="table-petugas" class="table table-bordered">
                 <thead>
@@ -73,13 +96,13 @@ if($_SESSION['LEVEL'] == 'siswa'){
                     while ($val = $pembayaran->fetch_asc($data)) {
                         echo "<tr>
                     <td>{$i}</td>
-                    <td>{$val['nisn']}</td>" . 
-                    ($_SESSION['LEVEL'] != 'siswa' ? "<td>{$val['nama']}</td>" : ""). 
-                    "<td>" . date("d-m-Y", strtotime($val['tgl_bayar']))  . "</td>
-                    <td>".$pembayaran->ubahBulan($val['bulan_bayar'])."</td>
+                    <td>{$val['nisn']}</td>" .
+                            ($_SESSION['LEVEL'] != 'siswa' ? "<td>{$val['nama']}</td>" : "") .
+                            "<td>" . date("d-m-Y", strtotime($val['tgl_bayar']))  . "</td>
+                    <td>" . $pembayaran->ubahBulan($val['bulan_bayar']) . "</td>
                     <td>{$val['tahun_bayar']}</td>
-                    <td>Rp. " . number_format($val['nominal'], 0,',','.') . "</td>
-                    <td>Rp. " . number_format($val['jumlah_bayar'], 0,',','.') . "</td>
+                    <td>Rp. " . number_format($val['nominal'], 0, ',', '.') . "</td>
+                    <td>Rp. " . number_format($val['jumlah_bayar'], 0, ',', '.') . "</td>
                     <td>{$val['nama_petugas']}</td>
                     </tr>";
                         $i++;

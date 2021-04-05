@@ -62,7 +62,7 @@ if (isset($_GET['action'])) {
                     <td>{$val['nama_petugas']}</td>
                     <td class='text-center'>" . ($_SESSION['LEVEL'] == 'admin' ? "
                         <a href='{$BASE_URL}halaman/entri_pembayaran/form.php?action=edit&id={$val['id_pembayaran']}' class='btn btn-sm btn-warning'><i class='fa fa-edit'></i> Edit</a>" : "") . "
-                        
+                        <a href='{$BASE_URL}halaman/entri_pembayaran/cetak.php?id={$val['id_pembayaran']}' class='btn btn-sm btn-success' target='_blank'><i class='fa fa-print'></i> Cetak</a>". "
                         <a href='{$BASE_URL}halaman/entri_pembayaran/index.php?action=delete&id={$val['id_pembayaran']}' class='btn btn-sm btn-danger' onclick='return confirm(\"Apakah anda yakin ingin menghapus data ini?\");'><i class='fa fa-trash'></i> Hapus</a>
                     </td>
                     </tr>";

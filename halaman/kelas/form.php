@@ -67,13 +67,13 @@ if (isset($_GET['id'])) {
                                 $query = $jurusan->getJurusan(); 
                                 while($val = $jurusan->fetch_asc($query)){ 
                             ?>
-                            <option <?= ($data == '') ? '' : ($data['kompetensi_keahlian'] == $val['id']) ? 'selected' : '' ?> value="<?= $val['id'] ?>"><?= $val['jurusan'] ?></option>
+                            <option <?= ($data == '' ? '' : ($data['kompetensi_keahlian'] == $val['id'] ? 'selected' : '') )?> value="<?= $val['id'] ?>"><?= $val['jurusan'] ?></option>
                             <?php } ?>
                         </select>
                     </div>
                     <div class="form-group">
                         <button name="<?= ($data == '') ? 'submit' : 'update' ?>" class="btn btn-sm btn-success" type="submit">
-                            <?= ($data == '') ? '<i class="fa fa-save"></i> Simpan' : '<i class="fa fa-edit"></i> Edit' ?>
+                            <?= ($data == '' ? '<i class="fa fa-save"></i> Simpan' : '<i class="fa fa-edit"></i> Edit') ?>
                         </button>
                     </div>
                 </div>

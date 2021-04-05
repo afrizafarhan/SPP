@@ -4,8 +4,9 @@ include_once('../../autoload.php');
 /* Panggil Header terlebih dahulu */
 include_once('../../templates/header.php');
 
+$pecahData = explode('|', $_REQUEST['data']);
 if (!isset($_SESSION['ID'])) {
-    ?>
+?>
     <script>
         alert('Silahkan login terlebih dahulu :)');
         window.location = <?= $BASE_URL ?>;
@@ -18,7 +19,7 @@ if (isset($_POST['simpan'])) {
     if (isset($_GET['action'])) {
         if ($_GET['action'] == 'edit') {
             $explode = explode("~", $_POST['nisn']);
-            if ($pembayaran->updatePembayaranById($_GET['id'], $explode[0], $_POST['bulan'], $_POST['tahun'], $explode[1], $_POST['jumlah'])) {
+            if ($pembayaran->updatePembayaranById($_GET['id'], $_POST['nisn'], $_POST['bulan'], $_POST['tahun'], $_POST['id_spp'], $_POST['jumlah'])) {
                 $pembayaran->redirect("index.php", "Berhasil mengedit entri pembayaran!");
             } else {
                 $pembayaran->redirect("form.php?action=edit&id=" . $_GET['id'], "Gagal mengedit data silahkan ulangi kembali!");
@@ -28,7 +29,7 @@ if (isset($_POST['simpan'])) {
         }
     } else {
         $explode = explode("~", $_POST['nisn']);
-        if ($pembayaran->tambahPembayaran($_SESSION['ID'], $explode[0], $_POST['bulan'], $_POST['tahun'], $explode[1], $_POST['jumlah'])) {
+        if ($pembayaran->tambahPembayaran($_SESSION['ID'], $_POST['nisn'], $_POST['bulan'], $_POST['tahun'], $_POST['id_spp'], $_POST['jumlah'])) {
             $pembayaran->redirect("index.php", "Berhasil menambahkan entri pembayaran!");
         } else {
             $pembayaran->redirect("form.php", "Gagal menambahkan data silahkan ulangi kembali!");
@@ -55,19 +56,26 @@ if (isset($_GET['action'])) {
         </div>
         <div class="card-body">
             <form method="post">
-
                 <div class="form-group">
-                    <label for="nisn">Siswa</label>
-                    <select class="form-control" name="nisn" id="nisn">
-                        <?php
-                        $siswa = new Siswa();
-                        $query = $siswa->getSemuaSiswa();
-                        while ($val = $siswa->fetch_asc($query)) {
-                            $selected = isset($_GET['action']) ? $data['nisn'] == $val['nisn'] ? "selected" : "" : "";
-                            echo '<option value="' . $val["nisn"] . '~' . $val["id_spp"] . '" ' . $selected . '>' . $val['nisn'] . ' - ' . $val['nama'] . ' - Rp. ' . number_format($val['nominal'], 0) . '</option>';
-                        }
-                        ?>
-                    </select>
+                    <div class="row">
+                        <div class="col-6">
+                            <label for="nisn">NISN</label>
+                            <input type="hidden" name="id_spp" value="<?= $pecahData[4] ?>">
+                            <input type="text" name="nisn" id="nisn" class="form-control" value="<?= $pecahData[0] ?>" readonly>
+                        </div>
+                        <div class="col-6">
+                            <label for="nisn">Nama Siswa</label>
+                            <input type="text" class="form-control" value="<?= $pecahData[1] ?>" readonly>
+                        </div>
+                        <div class="col-6">
+                            <label for="nisn">Kelas</label>
+                            <input type="text" class="form-control" value="<?= $pecahData[2] ?>" readonly>
+                        </div>
+                        <div class="col-6">
+                            <label for="nisn">Jurusan</label>
+                            <input type="text" class="form-control" value="<?= $pecahData[3] ?>" readonly>
+                        </div>
+                    </div>
                 </div>
 
                 <div class="form-group">

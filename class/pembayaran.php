@@ -93,7 +93,8 @@ class Pembayaran extends Koneksi
     {
         $sql = "SELECT * FROM {$this->nama_tabel} 
                 LEFT JOIN petugas ON {$this->nama_tabel}.id_petugas = petugas.id_petugas
-                LEFT JOIN spp ON {$this->nama_tabel}.id_spp = spp.id_spp 
+                LEFT JOIN spp ON {$this->nama_tabel}.id_spp = spp.id_spp
+                LEFT JOIN siswa ON {$this->nama_tabel}.nisn = siswa.nisn 
                 WHERE {$this->nama_tabel}.nisn = {$nisn}
             ";
         $query = $this->query($sql);
